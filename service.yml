@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: webserver_wordpress
+  labels:
+     env  : prod
+     owner: Anton Melnikov
+spec:
+  type: LoadBalancer
+  selector:
+    project: wordpress  # Selecting PODS with these labels
+  ports:
+    - name      : my-web-app-listener
+      protocol  : TCP
+      port      : 80   # Port load balancer
+      targetPort: 80    # Port on POD
+
+  
+

@@ -1,0 +1,51 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: my-web-deployment
+  labels:
+    app  : my-k8s-application
+    env  : prod
+    owner: Anton Melnikov
+spec:
+#  replicas: 2   # Don't need this anymore as we are using HorizontalPodAutoscaler
+  selector:
+    matchLabels:
+      project: wordpress
+  template:
+    metadata:
+      labels:
+        project: wordpress  # Services will look for PODS labels
+    spec:
+      containers:
+        - name : webserves-web
+          image: oxlamonsrivne/webserver:1.0
+          ports:
+          
+        - name : wordpress
+          image: oxlamonsrivne/wordpress:1.0
+
+        - name : db
+          image : docker pull oxlamonsrivne/db:1.0
+              
+
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: my-autoscaling
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v2beta1v1
+    kind: Deployment
+    name: my-web-deployment-autoscaling
+  minReplicas: 2
+  maxReplicas: 4
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageUtilization: 80
