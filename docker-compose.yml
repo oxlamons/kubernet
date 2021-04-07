@@ -4,7 +4,7 @@ services:
     image: mysql:8.0
     container_name: db
     restart: unless-stopped
-    #env_file: .env
+    env_file: .env
     environment:
       - MYSQL_DATABASE=wordpress
       - MYSQL_ROOT_PASSWORD=your_root_password
@@ -22,7 +22,7 @@ services:
     image: wordpress:5.1.1-fpm-alpine
     container_name: wordpress
     restart: unless-stopped
-    #env_file: .env
+    env_file: .env
     environment:
         - WORDPRESS_DB_HOST=db
         - WORDPRESS_DB_USER=your_wordpress_database_user
@@ -42,10 +42,13 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - wordpress:/var/www/html
       - ./nginx-conf:/etc/nginx/conf.d
       - certbot-etc:/etc/letsencrypt
+      #- nginx-conf/nginx.conf
+
     networks:
       - app-network
 
